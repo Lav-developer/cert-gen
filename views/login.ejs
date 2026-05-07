@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin Login | Certificate Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="app-shell">
+  <main class="page-wrap">
+    <div class="shell-grid login-layout">
+      <section class="card-ux login-hero">
+        <div class="hero-stack">
+          <div class="brand">
+            <div class="brand-mark"></div>
+            <div class="brand-copy">
+              <div class="eyebrow">Certificate operations</div>
+              <h1 class="title-lg">A sharper way to issue certificates.</h1>
+            </div>
+          </div>
+
+          <p class="mini-copy">
+            Manage issuance, downloads, and records from one focused workspace designed for fast admin tasks.
+          </p>
+
+          <div class="hero-stats">
+            <div class="stat-pill">
+              <strong>Fast flow</strong>
+              <span>Login, generate, and publish in a few steps.</span>
+            </div>
+            <div class="stat-pill">
+              <strong>Dual exports</strong>
+              <span>PDF and PNG outputs stay ready for sharing.</span>
+            </div>
+            <div class="stat-pill">
+              <strong>Clean records</strong>
+              <span>Track every certificate from the dashboard.</span>
+            </div>
+          </div>
+
+          <div class="credential-card">
+            <div class="credential-row">
+              <span class="subtle">Default admin</span>
+              <strong>admin / admin123</strong>
+            </div>
+            <div class="login-cta">
+              <span class="subtle">Open the dashboard to start generating certificates.</span>
+              <a class="btn-soft" href="/admin/login">Continue to login</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card-ux form-panel">
+        <div class="form-shell">
+          <div class="login-form-header">
+            <div class="eyebrow">Secure access</div>
+            <h2 class="title-lg" style="font-size: clamp(1.8rem, 3vw, 2.8rem);">Sign in to the admin console</h2>
+            <p class="mini-copy">Use your admin credentials to manage certificates, review history, and issue new records.</p>
+          </div>
+
+          <% if (error) { %><div class="notice-danger" style="margin-bottom: 16px;"><%= error %></div><% } %>
+
+          <form method="POST" action="/admin/login" class="stack">
+            <div>
+              <label for="username">Username</label>
+              <input id="username" type="text" class="ux-input" name="username" placeholder="Enter your username" required>
+            </div>
+
+            <div>
+              <label for="password">Password</label>
+              <input id="password" type="password" class="ux-input" name="password" placeholder="Enter your password" required>
+            </div>
+
+            <div class="helper-row">
+              <span class="subtle">Protected by session authentication.</span>
+              <button class="btn-primary-ux" type="submit">Login to dashboard</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
