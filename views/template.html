@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      width: 1120px;
+      height: 790px;
+      margin: 0;
+      padding: 28px;
+      box-sizing: border-box;
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.5), transparent 24%),
+        linear-gradient(135deg, #eaf1ff 0%, #f8fbff 45%, #dcecff 100%);
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .certificate {
+      width: 1050px;
+      height: 700px;
+      border: 2px solid rgba(15, 23, 42, 0.1);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0.82));
+      padding: 54px;
+      box-sizing: border-box;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.16);
+      border-radius: 24px;
+      overflow: hidden;
+    }
+    .title {
+      font-size: 48px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      font-size: 18px;
+      color: #64748b;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      margin-bottom: 38px;
+    }
+    .recipient {
+      font-size: 54px;
+      font-family: 'Great Vibes', cursive;
+      color: #d97706;
+      margin: 18px 0 10px;
+      border-bottom: 3px solid #f59e0b;
+      display: inline-block;
+      padding-bottom: 8px;
+    }
+    .details {
+      font-size: 21px;
+      line-height: 1.8;
+      color: #334155;
+      margin: 26px 0;
+    }
+    .date {
+      margin-top: 56px;
+      font-size: 18px;
+      color: #0f172a;
+      font-weight: 600;
+    }
+    .cert-id {
+      position: absolute;
+      bottom: 22px;
+      right: 28px;
+      font-size: 13px;
+      color: #64748b;
+      background: rgba(15, 23, 42, 0.05);
+      padding: 8px 12px;
+      border-radius: 999px;
+    }
+    .corner-line {
+      position: absolute;
+      inset: 18px;
+      border: 1px solid rgba(15, 23, 42, 0.1);
+      border-radius: 20px;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="certificate">
+    <div class="corner-line"></div>
+    <div class="subtitle">Achievement Certificate</div>
+    <div class="title">Certificate</div>
+    <div>This is to certify that</div>
+    <div class="recipient">{{full_name}}</div>
+    <div class="details">
+      has successfully completed the role of <strong>{{role}}</strong> in<br>
+      <strong>{{event_name}}</strong>
+    </div>
+    <div class="date">Date: {{event_date}}</div>
+    <div class="cert-id">Cert ID: {{cert_id}}</div>
+  </div>
+</body>
+</html>

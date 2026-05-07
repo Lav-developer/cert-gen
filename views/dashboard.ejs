@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Certificate Dashboard | Certificate Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="app-shell">
+  <main class="page-wrap">
+    <div class="shell-grid">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark"></div>
+          <div class="brand-copy">
+            <div class="eyebrow">Admin workspace</div>
+            <h1 class="title-lg" style="font-size: clamp(1.7rem, 3vw, 2.4rem);">Certificate Generator</h1>
+          </div>
+        </div>
+        <div class="button-row">
+          <a href="#builder" class="btn-soft">New certificate</a>
+          <a href="/admin/logout" class="btn-ghost">Logout</a>
+        </div>
+      </div>
+
+      <section class="card-ux hero-banner">
+        <div class="helper-row" style="margin-bottom: 12px;">
+          <div>
+            <div class="eyebrow">Generate and manage</div>
+            <h2>Issue certificates with a dashboard built for speed and clarity.</h2>
+            <p class="subtle" style="max-width: 760px; margin: 0;">Create records, export PDF and PNG files, and review the latest issuance history without leaving the page.</p>
+          </div>
+          <div class="status-chip">Live admin session</div>
+        </div>
+
+        <div class="metric-grid" id="metricGrid">
+          <div class="metric-card">
+            <strong id="metricCount">0</strong>
+            <span>Total certificates</span>
+          </div>
+          <div class="metric-card">
+            <strong>PDF + PNG</strong>
+            <span>Every issue creates both formats</span>
+          </div>
+          <div class="metric-card">
+            <strong>Secure</strong>
+            <span>Session-protected admin workflow</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="card-ux panel-compact" id="builder">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Issue certificate</div>
+              <h3>New record</h3>
+            </div>
+            <span class="subtle">Auto-generates a unique certificate ID</span>
+          </div>
+
+          <form id="certForm" class="form-grid">
+            <div>
+              <label for="full_name">Full Name</label>
+              <input id="full_name" type="text" class="ux-input" name="full_name" placeholder="Enter participant name" required>
+            </div>
+
+            <div>
+              <label for="role">Role</label>
+              <input id="role" type="text" class="ux-input" name="role" placeholder="Intern, Participant, Volunteer..." required>
+            </div>
+
+            <div>
+              <label for="event_name">Event / Internship Name</label>
+              <input id="event_name" type="text" class="ux-input" name="event_name" placeholder="Summer Internship 2026" required>
+            </div>
+
+            <div>
+              <label for="event_date">Date</label>
+              <input id="event_date" type="date" class="ux-input" name="event_date" required>
+            </div>
+
+            <button type="submit" class="btn-primary-ux">Generate certificate</button>
+          </form>
+
+          <div id="message" style="margin-top: 16px;"></div>
+
+          <div class="credential-card">
+            <strong>Workflow</strong>
+            <span class="subtle">Fill the form, generate a certificate, then download PDF or PNG from the archive.</span>
+          </div>
+        </section>
+
+        <section class="card-ux panel-compact">
+          <div class="section-title">
+            <div>
+              <div class="eyebrow">Archive</div>
+              <h3>All certificates</h3>
+            </div>
+            <span class="subtle">Most recent first</span>
+          </div>
+
+          <div class="table-wrap">
+            <table class="table-ux">
+              <thead>
+                <tr>
+                  <th>Cert ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Event</th>
+                  <th>Date</th>
+                  <th>Download</th>
+                </tr>
+              </thead>
+              <tbody id="certTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const messageEl = document.getElementById('message');
+    const certTableBody = document.getElementById('certTableBody');
+    const metricCount = document.getElementById('metricCount');
+    const form = document.getElementById('certForm');
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function setNotice(type, text) {
+      messageEl.innerHTML = `<div class="notice-${type}">${text}</div>`;
+    }
+
+    function renderEmptyState() {
+      certTableBody.innerHTML = `
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <strong>No certificates yet</strong>
+              Create your first record on the left to populate the archive.
+            </div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function renderCertificates(certs) {
+      metricCount.textContent = certs.length;
+
+      if (!certs.length) {
+        renderEmptyState();
+        return;
+      }
+
+      certTableBody.innerHTML = '';
+      certs.forEach((cert) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td><span class="cert-id-chip">${escapeHtml(cert.certificate_id)}</span></td>
+          <td>${escapeHtml(cert.full_name)}</td>
+          <td>${escapeHtml(cert.role)}</td>
+          <td>${escapeHtml(cert.event_name)}</td>
+          <td>${escapeHtml(cert.event_date)}</td>
+          <td>
+            <div class="action-stack">
+              <a href="/api/certificates/${cert.certificate_id}/download/pdf" class="btn-file">PDF</a>
+              <a href="/api/certificates/${cert.certificate_id}/download/image" class="btn-file">PNG</a>
+            </div>
+          </td>`;
+        certTableBody.appendChild(tr);
+      });
+    }
+
+    async function loadCertificates() {
+      try {
+        const res = await fetch('/api/certificates');
+        if (!res.ok) {
+          throw new Error('Unable to load certificates');
+        }
+        const certs = await res.json();
+        renderCertificates(certs);
+      } catch (error) {
+        certTableBody.innerHTML = `
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <strong>Archive unavailable</strong>
+                ${error.message}
+              </div>
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Generating...';
+
+      try {
+        const res = await fetch('/api/certificates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+
+        const result = await res.json();
+        if (!res.ok || !result.success) {
+          throw new Error(result.error || 'Certificate generation failed');
+        }
+
+        setNotice('success', `Certificate generated successfully. ID: <strong>${escapeHtml(result.certificate.certificate_id)}</strong>`);
+        form.reset();
+        await loadCertificates();
+      } catch (error) {
+        setNotice('danger', escapeHtml(error.message));
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Generate certificate';
+      }
+    });
+
+    loadCertificates();
+  </script>
+</body>
+</html>
